@@ -1,0 +1,3 @@
+{
+    "files": ["dbfile.py","database.py","main.py","gui.py"]
+}
