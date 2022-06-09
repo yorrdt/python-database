@@ -6,8 +6,6 @@ db = Database()
 # db.addEntry("Petrol", 258000, 48000, 12000)
 # db.addEntry("Diesel", 189000, 34000, 17000)
 
-db.printEntries()
-
-createWindow()
+createWindow(db)
 
 
