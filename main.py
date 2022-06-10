@@ -1,30 +1,56 @@
 import os
+import keyboard
 from database import Database
 
-commands_list = [
-    ["a", "добавить запись"],
-    ["e", "редактировать запись"],
-    ["d", "удалить запись"],
-    ["p", "вывести записи"],
-    ["f", "фильтрация записей"],
-    ["h", "справка"],
-    ["q", "выход"]
-]
+commands_list = ["1. Добавить запись", "2. Редактировать запись",
+                 "3. Удалить запись", "4. Вывести записи",
+                 "5. Фильтрация записей", "6. Справка", "7. Выход"]
 
 os.system("clear")
 
 print(f"Привет, {os.getlogin()}. Добро пожаловать в базу данных!")
 
 databaseObj = Database()
+selectedItem = 0
 
-while True:
-    print("Меню:")
+
+def drawMenu(item):
+    print("Меню: ")
     for i in range(0, len(commands_list)):
-        print(f"\'{commands_list[i][0]}\' - {commands_list[i][1]}")
+        if i == item:
+            print(f"> {commands_list[i]}")
+        else:
+            print(f"{commands_list[i]}")
 
-    command = input("> ")
+drawMenu(0)
+
+
+def on_release_down(e):
+    global selectedItem
     os.system("clear")
-    if command == commands_list[0][0]:
+    if selectedItem < len(commands_list) - 1:
+        selectedItem += 1
+    drawMenu(selectedItem)
+
+
+def on_release_up(e):
+    global selectedItem
+    os.system("clear")
+    if selectedItem > 0:
+        selectedItem -= 1
+    drawMenu(selectedItem)
+
+
+def on_release_enter(e):
+    global selectedItem
+    menuConditions(selectedItem)
+    selectedItem = 0
+    drawMenu(0)
+
+
+def menuConditions(menu_item):
+
+    if menu_item == 0:
         print("|" + 28 * "-" + "| Добавление новой записи |" + 27 * "-" + "|")
 
         fuelType = str(input("| Тип топлива: "))
@@ -39,11 +65,13 @@ while True:
 
         print("|" + 82 * "-" + "|")
 
-    elif command == commands_list[1][0]:
+    elif menu_item == 1:
         print("edit")
-    elif command == commands_list[2][0]:
-        print("delete")
-    elif command == commands_list[3][0]:
+    elif menu_item == 2:
+        print("|" + 32 * "-" + "| Удаление записи |" + 31 * "-" + "|")
+        print("|" + 82 * "-" + "|")
+
+    elif menu_item == 3:
 
         print("|" + 82 * "-" + "|")
 
@@ -73,15 +101,27 @@ while True:
 
         print("|" + 82 * "-" + "|")
 
-    elif command == commands_list[4][0]:
+    elif menu_item == 4:
         print("filter")
-    elif command == commands_list[5][0]:
+    elif menu_item == 5:
         print("help")
-    elif command == commands_list[6][0]:
+    elif menu_item == 6:
         print("quit")
         exit(0)
     else:
         print("Wrong input!")
+
+
+keyboard.on_release_key("down", callback=on_release_down)
+keyboard.on_release_key("up", callback=on_release_up)
+keyboard.on_release_key("enter", callback=on_release_enter)
+
+while True:
+    pass
+
+
+
+
 
 
 
