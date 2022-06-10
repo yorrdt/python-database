@@ -8,7 +8,7 @@ class Database:
         fileData = self.__file.getData()
         self.__entryID = fileData[0]
         self.__databaseList = fileData[1]
-        print("Database created!")
+        # print("Database created!")
 
     def addEntry(self, fuelType, volume, deliveryVolume,  annualConsumption):
         self.__entryID += 1
@@ -22,9 +22,9 @@ class Database:
         self.__databaseList.append(databaseItem)
         self.__file.appendData(databaseItem)
 
-    def printEntries(self):
-        for item in self.__databaseList:
-            print(item)
+    @property
+    def getEntries(self):
+        return self.__databaseList
 
     def deleteEntry(self, number):
         isFound = False
