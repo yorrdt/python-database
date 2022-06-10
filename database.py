@@ -8,16 +8,16 @@ class Database:
         fileData = self.__file.getData()
         self.__entryID = fileData[0]
         self.__databaseList = fileData[1]
-        # print("Database created!")
 
-    def addEntry(self, fuelType, volume, deliveryVolume,  annualConsumption):
+    def addEntry(self, fuelType, volume, deliveryVolume,  annualConsumption, volumeIn5Years):
         self.__entryID += 1
         databaseItem = [
             str(self.__entryID),
             fuelType,
             str(volume),
             str(deliveryVolume),
-            str(annualConsumption)
+            str(annualConsumption),
+            str(volumeIn5Years)
         ]
         self.__databaseList.append(databaseItem)
         self.__file.appendData(databaseItem)
