@@ -107,12 +107,74 @@ def show_intro_screen():
 
 show_intro_screen()
 
+def show_table_head():
+    print("|" + 80 * "-" + "|")
 
-def filter_conditions(selectedItem):
+    print("| " + "ID".center(4) + " | "
+          + "Нефтепродукт".center(12) + " | "
+          + "Объём".center(10) + " | "
+          + "Объём поставок".center(14) + " | "
+          + "Годовое".center(11) + " | "
+          + "Кол-во через".center(12) + " |")
+    print("| " + 4 * " " + " | "
+          + 12 * " " + " | "
+          + 10 * " " + " | "
+          + "в год".center(14) + " | "
+          + "потребление".center(11) + " | "
+          + "5 лет".center(12) + " |")
+
+    print("|" + 80 * "-" + "|")
+
+
+def filter_conditions(menu_item):
     clear_console()
-    print(selectedItem)
     global filterSelectedItem
     filterSelectedItem = 0
+
+    print("|" + 29 * "-" + "| Фильтрация записей |" + 29 * "-" + "|")
+
+    if menu_item == 0:
+        minValue = int(input("|\n| Введите минимальную границу фильтрации: "))
+        maxValue = int(input("| Введите максимальную границу фильтрации: "))
+        isFound = False
+
+        entries = databaseObj.getEntries
+        for i in range(0, len(entries)):
+            if minValue <= int(entries[i][0]) <= maxValue:
+                if isFound is False:
+                    show_table_head()
+                isFound = True
+                print(f"| {entries[i][0]:<4}", end=" | ")
+                print(f"{entries[i][1]:<12}", end=" | ")
+                print(f"{entries[i][2]:<10}", end=" | ")
+                print(f"{entries[i][3]:<14}", end=" | ")
+                print(f"{entries[i][4]:<11}", end=" | ")
+                print(f"{entries[i][5]:<12}", end=" |\n")
+
+        if isFound is False:
+            print("|\n| Ни одной записи для фильтрации не найдено")
+
+    elif menu_item == 1:
+        value = str(input("|\n| Введите название нефтепродукта: "))
+        isFound = False
+
+        entries = databaseObj.getEntries
+        for i in range(0, len(entries)):
+            if value == entries[i][1]:
+                if isFound is False:
+                    show_table_head()
+                isFound = True
+                print(f"| {entries[i][0]:<4}", end=" | ")
+                print(f"{entries[i][1]:<12}", end=" | ")
+                print(f"{entries[i][2]:<10}", end=" | ")
+                print(f"{entries[i][3]:<14}", end=" | ")
+                print(f"{entries[i][4]:<11}", end=" | ")
+                print(f"{entries[i][5]:<12}", end=" |\n")
+
+        if isFound is False:
+            print("|\n| Ни одной записи для фильтрации не найдено")
+
+    print("|" + 80 * "-" + "|")
 
 
 def menu_conditions(menu_item):
@@ -150,22 +212,7 @@ def menu_conditions(menu_item):
 
     elif menu_item == 3:
 
-        print("|" + 80 * "-" + "|")
-
-        print("| " + "ID".center(4) + " | "
-              + "Нефтепродукт".center(12) + " | "
-              + "Объём".center(10) + " | "
-              + "Объём поставок".center(14) + " | "
-              + "Годовое".center(11) + " | "
-              + "Кол-во через".center(12) + " |")
-        print("| " + 4 * " " + " | "
-              + 12 * " " + " | "
-              + 10 * " " + " | "
-              + "в год".center(14) + " | "
-              + "потребление".center(11) + " | "
-              + "5 лет".center(12) + " |")
-
-        print("|" + 80 * "-" + "|")
+        show_table_head()
 
         entries = databaseObj.getEntries
         for i in range(0, len(entries)):
