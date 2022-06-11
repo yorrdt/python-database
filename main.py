@@ -6,12 +6,20 @@ commands_list = ["1. Добавить запись", "2. Редактирова�
                  "3. Удалить запись", "4. Вывести записи",
                  "5. Фильтрация записей", "6. Справка", "7. Выход"]
 
-os.system("clear")
 
-print(f"Привет, {os.getlogin()}. Добро пожаловать в базу данных!")
+def clearConsole():
+    if os.name == ("nt", "dos"):
+        os.system("cls")
+        return
+    os.system("clear")
+
+
+clearConsole()
 
 databaseObj = Database()
 selectedItem = 0
+
+print(f"Привет, {os.getlogin()}. Добро пожаловать в базу данных!")
 
 
 def drawMenu(item):
@@ -21,13 +29,15 @@ def drawMenu(item):
             print(f"> {commands_list[i]}")
         else:
             print(f"{commands_list[i]}")
+    print("\nДля перемещения по меню используйте клавиши up и down")
+    print("Для выбора подходящего пункта меню нажмите клавишу right")
 
 drawMenu(0)
 
 
 def on_release_down(e):
     global selectedItem
-    os.system("clear")
+    clearConsole()
     if selectedItem < len(commands_list) - 1:
         selectedItem += 1
     drawMenu(selectedItem)
@@ -35,17 +45,10 @@ def on_release_down(e):
 
 def on_release_up(e):
     global selectedItem
-    os.system("clear")
+    clearConsole()
     if selectedItem > 0:
         selectedItem -= 1
     drawMenu(selectedItem)
-
-
-def on_release_enter(e):
-    global selectedItem
-    menuConditions(selectedItem)
-    selectedItem = 0
-    drawMenu(0)
 
 
 def menuConditions(menu_item):
@@ -53,7 +56,7 @@ def menuConditions(menu_item):
     if menu_item == 0:
         print("|" + 28 * "-" + "| Добавление новой записи |" + 27 * "-" + "|")
 
-        fuelType = str(input("| Тип топлива: "))
+        fuelType = input("| Тип топлива: ")
         volume = int(input("| Объём: "))
         deliveryVolume = int(input("| Объём поставок в год: "))
         annualConsumption = int(input("| Годовое потребление: "))
@@ -114,10 +117,16 @@ def menuConditions(menu_item):
 
 keyboard.on_release_key("down", callback=on_release_down)
 keyboard.on_release_key("up", callback=on_release_up)
-keyboard.on_release_key("enter", callback=on_release_enter)
 
 while True:
-    pass
+    keyboard.wait("right")
+    clearConsole()
+    menuConditions(selectedItem)
+    selectedItem = 0
+    print("Нажмите клавишу esc (или клавиши up или down) для перехода на главное меню")
+    keyboard.wait("esc")
+    clearConsole()
+    drawMenu(0)
 
 
 
