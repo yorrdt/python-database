@@ -1,7 +1,5 @@
 import os
-
 from getkey import getkey, keys
-
 from database import Database
 
 commands_list = ["1. Добавить запись", "2. Редактировать запись", "3. Удалить запись", "4. Вывести записи",
@@ -19,18 +17,20 @@ def clear_console():
 
 
 clear_console()
-
 databaseObj = Database()
-selectedItem = 0
+
+
+def print_menu_with_selected_item(item, out_list):
+    for i in range(0, len(out_list)):
+        if i == item:
+            print(f"> {out_list[i]}")
+        else:
+            print(f"{out_list[i]}")
 
 
 def draw_menu(item):
     print("Меню: ")
-    for i in range(0, len(commands_list)):
-        if i == item:
-            print(f"> {commands_list[i]}")
-        else:
-            print(f"{commands_list[i]}")
+    print_menu_with_selected_item(item, commands_list)
     print("\nДля перемещения по меню используйте клавиши UP и DOWN")
     print("Для выбора подходящего пункта меню нажмите клавишу ENTER")
 
@@ -38,14 +38,13 @@ def draw_menu(item):
 def draw_filter_menu(item):
     print("|" + 30 * "-" + "| Фильтрация записей |" + 30 * "-" + "|")
     print("| " + "Выберите параметр фильтрации: \n")
-    for i in range(0, len(filter_list)):
-        if i == item:
-            print(f"> {filter_list[i]}")
-        else:
-            print(f"{filter_list[i]}")
-    print("\n|\n| Для перемещения по меню используйте клавиши UP и DOWN")
+    print_menu_with_selected_item(item, filter_list)
+    print("\n| Для перемещения по меню используйте клавиши UP и DOWN")
     print("| Для выбора подходящего пункта меню нажмите клавишу ENTER")
     print("|" + 82 * "-" + "|")
+
+
+selectedItem = 0
 
 
 def on_press_down():
@@ -84,9 +83,9 @@ def on_press_up_filter():
 
 
 def wait_press(pressed_key):
-    key = getkey()
-    while key != pressed_key:
-        key = getkey()
+    k = getkey()
+    while k != pressed_key:
+        k = getkey()
 
 
 def show_intro_screen():
@@ -107,6 +106,7 @@ def show_intro_screen():
 
 show_intro_screen()
 
+
 def show_table_head():
     print("|" + 80 * "-" + "|")
 
@@ -126,55 +126,73 @@ def show_table_head():
     print("|" + 80 * "-" + "|")
 
 
+def print_entry_data(entries_list, num):
+    print(f"| {entries_list[num][0]:<4}", end=" | ")
+    print(f"{entries_list[num][1]:<12}", end=" | ")
+    print(f"{entries_list[num][2]:<10}", end=" | ")
+    print(f"{entries_list[num][3]:<14}", end=" | ")
+    print(f"{entries_list[num][4]:<11}", end=" | ")
+    print(f"{entries_list[num][5]:<12}", end=" |\n")
+
+
+def filtering_by_number(num):
+    minValue = int(input("| Введите минимальную границу фильтрации: "))
+    maxValue = int(input("| Введите максимальную границу фильтрации: "))
+    isFound = False
+
+    entries = databaseObj.getEntries
+    for i in range(0, len(entries)):
+        if minValue <= int(entries[i][num]) <= maxValue:
+            if isFound is False:
+                show_table_head()
+            isFound = True
+            print_entry_data(entries, i)
+
+    if isFound is False:
+        print("|\n| Ни одной записи для фильтрации не найдено")
+
+
+def filtering_by_string(value, num):
+    isFound = False
+
+    entries = databaseObj.getEntries
+    for i in range(0, len(entries)):
+        if value == entries[i][num]:
+            if isFound is False:
+                show_table_head()
+            isFound = True
+            print_entry_data(entries, i)
+
+    if isFound is False:
+        print("|\n| Ни одной записи для фильтрации не найдено")
+
+
 def filter_conditions(menu_item):
     clear_console()
     global filterSelectedItem
     filterSelectedItem = 0
 
     print("|" + 29 * "-" + "| Фильтрация записей |" + 29 * "-" + "|")
+    print(f"|\n| Параметр фильтрации: {filter_list[menu_item][3:len(filter_list[menu_item])]}", end="\n|\n")
 
-    if menu_item == 0:
-        minValue = int(input("|\n| Введите минимальную границу фильтрации: "))
-        maxValue = int(input("| Введите максимальную границу фильтрации: "))
-        isFound = False
-
-        entries = databaseObj.getEntries
-        for i in range(0, len(entries)):
-            if minValue <= int(entries[i][0]) <= maxValue:
-                if isFound is False:
-                    show_table_head()
-                isFound = True
-                print(f"| {entries[i][0]:<4}", end=" | ")
-                print(f"{entries[i][1]:<12}", end=" | ")
-                print(f"{entries[i][2]:<10}", end=" | ")
-                print(f"{entries[i][3]:<14}", end=" | ")
-                print(f"{entries[i][4]:<11}", end=" | ")
-                print(f"{entries[i][5]:<12}", end=" |\n")
-
-        if isFound is False:
-            print("|\n| Ни одной записи для фильтрации не найдено")
+    if menu_item == 0 or 2 <= menu_item <= 5:
+        filtering_by_number(menu_item)
 
     elif menu_item == 1:
-        value = str(input("|\n| Введите название нефтепродукта: "))
-        isFound = False
-
-        entries = databaseObj.getEntries
-        for i in range(0, len(entries)):
-            if value == entries[i][1]:
-                if isFound is False:
-                    show_table_head()
-                isFound = True
-                print(f"| {entries[i][0]:<4}", end=" | ")
-                print(f"{entries[i][1]:<12}", end=" | ")
-                print(f"{entries[i][2]:<10}", end=" | ")
-                print(f"{entries[i][3]:<14}", end=" | ")
-                print(f"{entries[i][4]:<11}", end=" | ")
-                print(f"{entries[i][5]:<12}", end=" |\n")
-
-        if isFound is False:
-            print("|\n| Ни одной записи для фильтрации не найдено")
+        value = str(input("| Введите название нефтепродукта: "))
+        filtering_by_string(value, menu_item)
 
     print("|" + 80 * "-" + "|")
+
+
+def keys_check(on_press_down_func, on_press_up_func):
+    key = keys.L
+    while key != keys.ENTER:
+        key = getkey()
+        if key == keys.DOWN:
+            on_press_down_func()
+        elif key == keys.UP:
+            on_press_up_func()
 
 
 def menu_conditions(menu_item):
@@ -216,12 +234,7 @@ def menu_conditions(menu_item):
 
         entries = databaseObj.getEntries
         for i in range(0, len(entries)):
-            print(f"| {entries[i][0]:<4}", end=" | ")
-            print(f"{entries[i][1]:<12}", end=" | ")
-            print(f"{entries[i][2]:<10}", end=" | ")
-            print(f"{entries[i][3]:<14}", end=" | ")
-            print(f"{entries[i][4]:<11}", end=" | ")
-            print(f"{entries[i][5]:<12}", end=" |\n")
+            print_entry_data(entries, i)
 
         print("|" + 80 * "-" + "|")
 
@@ -229,13 +242,7 @@ def menu_conditions(menu_item):
 
         draw_filter_menu(0)
 
-        filter_key = keys.L
-        while filter_key != keys.ENTER:
-            filter_key = getkey()
-            if filter_key == keys.DOWN:
-                on_press_down_filter()
-            elif filter_key == keys.UP:
-                on_press_up_filter()
+        keys_check(on_press_down_filter, on_press_up_filter)
 
         filter_conditions(filterSelectedItem)
 
@@ -243,20 +250,11 @@ def menu_conditions(menu_item):
         print("help")
     elif menu_item == 6:
         exit(0)
-    else:
-        print("Wrong input!")
 
 
 while True:
 
-    key = keys.L
-    while key != keys.ENTER:
-        key = getkey()
-        if key == keys.DOWN:
-            on_press_down()
-        elif key == keys.UP:
-            on_press_up()
-
+    keys_check(on_press_down, on_press_up)
     clear_console()
     menu_conditions(selectedItem)
     selectedItem = 0
