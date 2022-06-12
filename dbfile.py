@@ -1,12 +1,13 @@
 import csv
 import os
 
+
 class dbFile:
 
     def __init__(self):
 
         self.__fileName = "database.csv"
-        if os.path.exists(self.__fileName) == False:
+        if not os.path.exists(self.__fileName):
             open(self.__fileName, "a").close()
 
     def getData(self):
@@ -17,18 +18,17 @@ class dbFile:
 
         with open(self.__fileName, "r", newline="") as file:
             reader = csv.reader(file)
-            countOfItems = 0
+            countOfEntries = 0
             databaseList = []
             for row in reader:
-                countOfItems += 1
+                countOfEntries = int(row[0])
                 databaseList.append(row)
-            return [countOfItems, databaseList]
+            return [countOfEntries, databaseList]
 
     def writeData(self, databaseList):
         with open(self.__fileName, "w", newline="") as file:
             writer = csv.writer(file)
             writer.writerows(databaseList)
-
 
     def appendData(self, databaseItem):
         with open(self.__fileName, "a", newline="") as file:

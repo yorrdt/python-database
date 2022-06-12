@@ -2,8 +2,8 @@ import os
 from getkey import getkey, keys
 from database import Database
 
-commands_list = ["1. Добавить запись", "2. Редактировать запись", "3. Удалить запись", "4. Вывести записи",
-                 "5. Фильтрация записей", "6. Справка", "7. Выход"]
+commands_list = ["1. Добавить запись", "2. Редактировать запись", "3. Удалить запись",
+                 "4. Вывести записи", "5. Фильтрация записей", "6. Выход"]
 
 filter_list = ["1. Номер записи", "2. Нефтепродукт", "3. Объем", "4. Объем поставок в год",
                "5. Годовое потребление", "6. Количество через 5 лет"]
@@ -21,6 +21,7 @@ databaseObj = Database()
 
 
 def print_menu_with_selected_item(item, out_list):
+    print("Меню: ")
     for i in range(0, len(out_list)):
         if i == item:
             print(f"> {out_list[i]}")
@@ -28,20 +29,11 @@ def print_menu_with_selected_item(item, out_list):
             print(f"{out_list[i]}")
 
 
-def draw_menu(item):
-    print("Меню: ")
-    print_menu_with_selected_item(item, commands_list)
-    print("\nДля перемещения по меню используйте клавиши UP и DOWN")
-    print("Для выбора подходящего пункта меню нажмите клавишу ENTER")
-
-
 def draw_filter_menu(item):
     print("|" + 30 * "-" + "| Фильтрация записей |" + 30 * "-" + "|")
     print("| " + "Выберите параметр фильтрации: \n")
     print_menu_with_selected_item(item, filter_list)
-    print("\n| Для перемещения по меню используйте клавиши UP и DOWN")
-    print("| Для выбора подходящего пункта меню нажмите клавишу ENTER")
-    print("|" + 82 * "-" + "|")
+    print("\n|" + 82 * "-" + "|")
 
 
 selectedItem = 0
@@ -52,7 +44,7 @@ def on_press_down():
     clear_console()
     if selectedItem < len(commands_list) - 1:
         selectedItem += 1
-    draw_menu(selectedItem)
+    print_menu_with_selected_item(selectedItem, commands_list)
 
 
 def on_press_up():
@@ -60,7 +52,7 @@ def on_press_up():
     clear_console()
     if selectedItem > 0:
         selectedItem -= 1
-    draw_menu(selectedItem)
+    print_menu_with_selected_item(selectedItem, commands_list)
 
 
 filterSelectedItem = 0
@@ -71,7 +63,7 @@ def on_press_down_filter():
     clear_console()
     if filterSelectedItem < len(filter_list) - 1:
         filterSelectedItem += 1
-    draw_filter_menu(filterSelectedItem)
+    print_menu_with_selected_item(filterSelectedItem, filter_list)
 
 
 def on_press_up_filter():
@@ -79,7 +71,7 @@ def on_press_up_filter():
     clear_console()
     if filterSelectedItem > 0:
         filterSelectedItem -= 1
-    draw_filter_menu(filterSelectedItem)
+    print_menu_with_selected_item(filterSelectedItem, filter_list)
 
 
 def wait_press(pressed_key):
@@ -95,13 +87,26 @@ def show_intro_screen():
     print("| " + "реализуемых нефтебазой\"".center(80) + " |")
     print("|" + " ".center(82) + "|")
     print("|" + "Разработчик: Мороз Егор Владимирович".center(82) + "|")
-
-    # something
-
-    print("|" + 21 * "-" + "[ Нажмите ENTER для начала работы с БД ]".center(40) + 21 * "-" + "|")
+    print("|" + " ".center(82) + "|")
+    print("|" + 24 * "-" + "| Справка по работе с программой |" + 24 * "-" + "|")
+    print("|" + " ".center(82) + "|")
+    print("| 1. Для перемещения по меню используйте клавиши UP и DOWN, для выбора пункта меню |")
+    print("|" + 4 * " " + "нажмите клавишу ENTER.".ljust(78) + "|")
+    print("| 2. Для добавления данных в базу данных выберите пункт меню \"Добавить запись\" и" + 3 * " " + "|")
+    print("|" + 4 * " " + "введите необходимые данные.".ljust(78) + "|")
+    print("|" + " 3. Для редактирования данных выберите пункт меню \"Редактировать запись\"," + 9 * " " + "|")
+    print("|" + 4 * " " + "введите номер записи и новые данные для записи.".ljust(78) + "|")
+    print("|" + " 4. Для удаления записи из базы данных выберите пункт меню \"Удалить запись\" и" + 5 * " " + "|")
+    print("|" + 4 * " " + "введите номер записи.".ljust(78) + "|")
+    print("|" + " 5. Чтобы вывести все записи на экран выберите пункт меню \"Вывести записи\"." + 7 * " " + "|")
+    print("|" + " 6. Для фильтрации данных выберите пункт меню \"Фильтрация записей\". Далее" + 9 * " " + "|")
+    print("|" + 4 * " " + "выберите параметр фильтрации и введите данные для выполнения операции." + 8 * " " + "|")
+    print("|" + " 7. Для завершения работы выберите пункт меню \"Выход\".".ljust(82) + "|")
+    print("|" + " ".center(82) + "|")
+    print("|" + 16 * "-" + "[ Нажмите ENTER для начала работы с Базой Данных ]" + 16 * "-" + "|")
     wait_press(keys.ENTER)
     clear_console()
-    draw_menu(0)
+    print_menu_with_selected_item(0, commands_list)
 
 
 show_intro_screen()
@@ -241,14 +246,10 @@ def menu_conditions(menu_item):
     elif menu_item == 4:
 
         draw_filter_menu(0)
-
         keys_check(on_press_down_filter, on_press_up_filter)
-
         filter_conditions(filterSelectedItem)
 
     elif menu_item == 5:
-        print("help")
-    elif menu_item == 6:
         exit(0)
 
 
@@ -261,7 +262,7 @@ while True:
     print("\nНажмите клавишу ESC для перехода на главное меню")
     wait_press(keys.ESC)
     clear_console()
-    draw_menu(0)
+    print_menu_with_selected_item(0, commands_list)
 
 
 
